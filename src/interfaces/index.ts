@@ -18,6 +18,7 @@ export enum TransactionType {
   topup,
   register,
   mine,
+  certificate,
 }
 
 export interface data {}

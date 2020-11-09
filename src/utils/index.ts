@@ -20,3 +20,12 @@ export const getBroadcast = <T>(url: string, block: BlockChain, data: T) => {
   });
   return requestPromises;
 };
+export const isNodeExist = (
+  networkNodes: String[],
+  currentNode: String,
+  newNode: String
+) => {
+  const nodeNotAlreadyPresent = networkNodes.indexOf(newNode) == -1;
+  const notCurrentNode = currentNode !== newNode;
+  return nodeNotAlreadyPresent && notCurrentNode;
+};

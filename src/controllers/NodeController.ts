@@ -1,7 +1,7 @@
 import { BodyParams, Controller, Get, Inject, Post } from "@tsed/common";
 import axios, { AxiosResponse } from "axios";
 import { BlockChain } from "../models/BlockChain";
-import { postBroadcast } from "../utils";
+import { isNodeExist, postBroadcast } from "../utils";
 
 @Controller("/nodes")
 export class NodeController {
@@ -11,20 +11,27 @@ export class NodeController {
     if (this.block.networkNodes.indexOf(newNodeUrl) == -1)
       this.block.networkNodes.push(newNodeUrl);
 
-    const requestPromises: Promise<AxiosResponse<any>>[] = postBroadcast<
+    const requestBroadcast: Promise<AxiosResponse<any>>[] = postBroadcast<
       string
     >("register-node", this.block, newNodeUrl);
 
-    const result = await axios.all(requestPromises);
+    await axios.all(requestBroadcast);
+    const requestRegisterBulk: Promise<AxiosResponse<any>>[] = postBroadcast<
+      string
+    >("register-nodes-bulk", this.block, newNodeUrl);
+    await axios.all(requestBroadcast);
     return { note: "New node registered with network successfully." };
   }
 
   @Post("/register-node")
   registerNode(@BodyParams("newNodeUrl") newNodeUrl: String) {
-    const nodeNotAlreadyPresent =
-      this.block.networkNodes.indexOf(newNodeUrl) == -1;
-    const notCurrentNode = this.block.currentNodeUrl !== newNodeUrl;
-    if (nodeNotAlreadyPresent && notCurrentNode)
+    if (
+      isNodeExist(
+        this.block.networkNodes,
+        this.block.currentNodeUrl,
+        newNodeUrl
+      )
+    )
       this.block.networkNodes.push(newNodeUrl);
 
     return { note: "New node registered successfully." };
@@ -32,10 +39,13 @@ export class NodeController {
   @Post("/register-nodes-bulk")
   registerNodeBulk(@BodyParams() allNetworkNodes: String[]) {
     allNetworkNodes.forEach((networkNodeUrl) => {
-      const nodeNotAlreadyPresent =
-        this.block.networkNodes.indexOf(networkNodeUrl) == -1;
-      const notCurrentNode = this.block.currentNodeUrl !== networkNodeUrl;
-      if (nodeNotAlreadyPresent && notCurrentNode)
+      if (
+        isNodeExist(
+          this.block.networkNodes,
+          this.block.currentNodeUrl,
+          networkNodeUrl
+        )
+      )
         this.block.networkNodes.push(networkNodeUrl);
     });
 
