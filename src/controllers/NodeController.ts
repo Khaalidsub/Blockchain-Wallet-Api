@@ -1,15 +1,11 @@
 import { BodyParams, Controller, Get, Inject, Post } from "@tsed/common";
 import axios, { AxiosResponse } from "axios";
 import { BlockChain } from "../models/BlockChain";
-import { KeyMaker } from "../models/KeyMaker";
-import { getBroadcast, isNodeExist, postBroadcast } from "../utils";
+import { isNodeExist, postBroadcast } from "../utils";
 
 @Controller("/nodes")
 export class NodeController {
-  constructor(
-    @Inject() public block: BlockChain,
-    @Inject() public keyMaker: KeyMaker
-  ) {
+  constructor(@Inject() public block: BlockChain) {
     //50 seconds now => 13hrs
     setInterval(this.requestNodesStatus, 5000 * 10);
   }

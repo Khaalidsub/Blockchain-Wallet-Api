@@ -10,13 +10,15 @@ import { PaymentTransaction } from "./PaymentTransaction";
 @Scope(ProviderScope.SINGLETON)
 export class KeyMaker {
   public publicKey: KeyObject;
+  public currentNodePublicKey: KeyObject;
   public nodePublicKeys: KeyObject[];
   private currentNodePrivateKey: KeyObject;
   constructor() {
     const { publicKey, privateKey } = generateKeyPairSync("rsa", {
       modulusLength: 2048,
     });
-    this.nodePublicKeys.push(publicKey);
+    // this.nodePublicKeys.push(publicKey);
+    this.currentNodePublicKey = publicKey;
     this.currentNodePrivateKey = privateKey;
   }
 

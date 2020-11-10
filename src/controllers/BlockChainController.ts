@@ -52,16 +52,16 @@ export class BlockChainController {
       >("recieve-new-block", this.block, newBlock);
 
       await axios.all(requestPromises);
-      const transaction: PaymentTransaction = {
-        transactionType: TransactionType.mine,
-        data: 12.5,
-        sender: "00",
-        recipient: this.nodeAddress,
-      };
-      await axios.post(`${this.block.currentNodeUrl}/transaction/broadcast`, {
-        transaction,
-        signature: this.keyMaker.signNodeData(transaction),
-      });
+      // const transaction: PaymentTransaction = {
+      //   transactionType: TransactionType.mine,
+      //   data: 12.5,
+      //   sender: "00",
+      //   recipient: this.nodeAddress,
+      // };
+      // await axios.post(`${this.block.currentNodeUrl}/transaction/broadcast`, {
+      //   transaction,
+      //   signature: this.keyMaker.signNodeData(transaction),
+      // });
 
       return {
         note: "New block mined & broadcast successfully",
@@ -103,7 +103,7 @@ export class BlockChainController {
     const blockchains = await axios.all(requestPromises);
     const currentChainLength = this.block.chain.length;
     let maxChainLength = currentChainLength;
-    let newLongestChain = null;
+    let newLongestChain: HashBlock[] = [];
     let newPendingTransactions: PaymentTransaction[] = [];
 
     blockchains.forEach((blockchain) => {
