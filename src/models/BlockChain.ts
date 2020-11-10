@@ -10,12 +10,14 @@ export class BlockChain {
   public networkNodes: String[];
   public pendingPaymentTransactions: PaymentTransaction[];
   public currentNodeUrl = currentNodeUrls;
+  public statusWarning: number;
   //   public pendingCourseTransactions: CourseTransaction[];
   constructor() {
     this.chain = [];
     this.networkNodes = [];
     this.pendingPaymentTransactions = [];
     this.createNewBlock(100, "0", "0");
+    this.statusWarning = 0;
   }
 
   createNewBlock(
@@ -130,6 +132,19 @@ export class BlockChain {
       transaction: correctTransaction,
       block: correctBlock,
     };
+  }
+
+  updateNodeStatus(isOnline: boolean) {
+    if (isOnline) {
+      this.statusWarning = 0;
+    } else {
+      //!change this to bigger warning
+      if (this.statusWarning > 2) {
+        return true;
+      }
+      this.statusWarning++;
+      return false;
+    }
   }
 
   getAddressData(address: String) {

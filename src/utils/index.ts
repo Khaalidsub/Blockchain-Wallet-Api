@@ -13,10 +13,10 @@ export const postBroadcast = <T>(url: string, block: BlockChain, data: T) => {
   });
   return requestPromises;
 };
-export const getBroadcast = <T>(url: string, block: BlockChain, data: T) => {
+export const getBroadcast = (url: string, block: BlockChain) => {
   const requestPromises: Promise<AxiosResponse<any>>[] = [];
   block.networkNodes.forEach((networkNodeUrl) => {
-    requestPromises.push(axios.post(`${networkNodeUrl}/transaction`, data));
+    requestPromises.push(axios.get(`${networkNodeUrl}/${url}`));
   });
   return requestPromises;
 };
@@ -29,3 +29,5 @@ export const isNodeExist = (
   const notCurrentNode = currentNode !== newNode;
   return nodeNotAlreadyPresent && notCurrentNode;
 };
+
+export const validateNodeStatus = (block: BlockChain) => {};
